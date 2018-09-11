@@ -32,7 +32,8 @@ class DriveFile extends Component {
 
     let request = gapiClient.request({
       'method': 'GET',
-      'path': '/drive/v3/files/'+ fileId,
+      'path': '/drive/v3/files/'+ fileId ,
+      'params': {'fields': 'name, id, mimeType, properties'}
     });
 
     request.execute(function(response) {
@@ -60,7 +61,7 @@ class DriveFile extends Component {
     let request = gapiClient.request({
       'method': 'PATCH',
       'path': '/drive/v3/files/'+ fileId,
-      'params': {'properties': {propertyKey: propertyValue}},
+      'params': {properties: { 'test': 'value' }, 'fields': 'name, id, mimeType, properties'},
     });
 
     request.execute(function(response) {
@@ -77,6 +78,28 @@ class DriveFile extends Component {
     const keys = Object.keys(file);
 
     const fileProps = keys.map((key, index) => {
+      if(typeof(file[key]) === 'object'){
+        let inner = file[key];
+        let innerKeys = Object.keys(inner);
+
+        let subRow = innerKeys.map((innerKey, innerIndex) => {
+          return(
+            <tr key={`inner-file-prop-${innerIndex}`}>
+              <td>{innerKey}</td>
+              <td>{inner[innerKey]}</td>
+            </tr>
+          )
+        });
+
+        return(
+          <React.Fragment key={`frag-${index}`}>
+            <tr key={`prop-${index}`}>
+              <td colSpan={2}>{key}</td>
+            </tr>
+            {subRow}
+          </React.Fragment>
+        )
+      }
       return(
         <tr key={`file-prop-${index}`}><td>{key}</td><td>{file[key]}</td></tr>
       )
