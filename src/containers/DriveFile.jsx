@@ -55,17 +55,22 @@ class DriveFile extends Component {
 
   onSubmitForm(e){
     e.preventDefault();
+    const updateFileInState = this.updateFileInState;
+    const hideModal = this.handleClose;
+
     const { propertyValue, propertyKey } = this.state;
     const { gapiClient, fileId } = this.props;
 
     let request = gapiClient.request({
       'method': 'PATCH',
       'path': '/drive/v3/files/'+ fileId,
-      'params': {properties: { 'test': 'value' }, 'fields': 'name, id, mimeType, properties'},
+      'params': {'fields': 'name, id, mimeType, properties'},
+      'body': {'properties': { [propertyKey]: propertyValue }},
     });
 
     request.execute(function(response) {
-      console.log(response)
+      updateFileInState(response);
+      hideModal();
     });
   }
 
@@ -109,7 +114,7 @@ class DriveFile extends Component {
       <div>
         <Table striped bordered condensed hover>
           <tbody>
-            {fileProps}
+          {fileProps}
           </tbody>
         </Table>
         <Button bsStyle="primary" onClick={this.showAddPropertyModal}>Add Property</Button>
