@@ -15,8 +15,7 @@ class DriveFile extends Component {
     this.state = {
       file: {},
       showModal: false,
-      propertyKey: '',
-      propertyValue: '',
+      form: {}
     };
 
     this.updateFileInState = this.updateFileInState.bind(this);
@@ -24,6 +23,7 @@ class DriveFile extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.onSubmitForm = this.onSubmitForm.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.deleteProperty = this.deleteProperty.bind(this);
   }
 
   componentDidMount(){
@@ -58,14 +58,14 @@ class DriveFile extends Component {
     const updateFileInState = this.updateFileInState;
     const hideModal = this.handleClose;
 
-    const { propertyValue, propertyKey } = this.state;
     const { gapiClient, fileId } = this.props;
 
+    const { form } = this.state;
     let request = gapiClient.request({
       'method': 'PATCH',
       'path': '/drive/v3/files/'+ fileId,
       'params': {'fields': 'name, id, mimeType, properties'},
-      'body': {'properties': { [propertyKey]: propertyValue }},
+      'body': {'properties': { ...form }},
     });
 
     request.execute(function(response) {
@@ -75,7 +75,26 @@ class DriveFile extends Component {
   }
 
   handleChange(e){
-    this.setState({[e.target.name]: e.target.value})
+    let { form } = this.state;
+    form[e.target.name] = e.target.value;
+
+    this.setState({form})
+  }
+
+  deleteProperty(property){
+    const { gapiClient, fileId } = this.props;
+    const updateFileInState = this.updateFileInState;
+
+    let request = gapiClient.request({
+      'method': 'PATCH',
+      'path': '/drive/v3/files/'+ fileId,
+      'params': {'fields': 'name, id, mimeType, properties'},
+      'body': {'properties': { [property]: null }},
+    });
+
+    request.execute(function(response) {
+      updateFileInState(response);
+    });
   }
 
   render() {
@@ -92,6 +111,7 @@ class DriveFile extends Component {
             <tr key={`inner-file-prop-${innerIndex}`}>
               <td>{innerKey}</td>
               <td>{inner[innerKey]}</td>
+              <td><a onClick={() => {this.deleteProperty(innerKey)}}>Delete</a></td>
             </tr>
           )
         });
@@ -99,14 +119,18 @@ class DriveFile extends Component {
         return(
           <React.Fragment key={`frag-${index}`}>
             <tr key={`prop-${index}`}>
-              <td colSpan={2}>{key}</td>
+              <td colSpan={3}>{key}</td>
             </tr>
             {subRow}
           </React.Fragment>
         )
       }
       return(
-        <tr key={`file-prop-${index}`}><td>{key}</td><td>{file[key]}</td></tr>
+        <tr key={`file-prop-${index}`}>
+          <td>{key}</td>
+          <td>{file[key]}</td>
+          <td>&nbsp;</td>
+        </tr>
       )
     });
 
@@ -125,13 +149,34 @@ class DriveFile extends Component {
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={this.onSubmitForm}>
-              <FormGroup controlId="key">
-                <ControlLabel>Key</ControlLabel>{' '}
-                <input name="propertyKey" className='form-control' type="text" placeholder="" onChange={this.handleChange}/>
+              <p>Use this form to enter meta tags</p>
+              <FormGroup controlId="person">
+                <ControlLabel>Person</ControlLabel>{' '}
+                <input name="person" className='form-control' type="text" placeholder="" onChange={this.handleChange}/>
               </FormGroup>{' '}
-              <FormGroup controlId="value">
-                <ControlLabel>Value</ControlLabel>{' '}
-                <input name="propertyValue" className='form-control' type="text" placeholder="" onChange={this.handleChange}/>
+              <FormGroup controlId="office">
+                <ControlLabel>Office/Node</ControlLabel>{' '}
+                <input name="office" className='form-control' type="text" placeholder="" onChange={this.handleChange}/>
+              </FormGroup>{' '}
+              <FormGroup controlId="project">
+                <ControlLabel>Project</ControlLabel>{' '}
+                <input name="project" className='form-control' type="text" placeholder="" onChange={this.handleChange}/>
+              </FormGroup>{' '}
+              <FormGroup controlId="grant">
+                <ControlLabel>Grant</ControlLabel>{' '}
+                <input name="grant" className='form-control' type="text" placeholder="" onChange={this.handleChange}/>
+              </FormGroup>{' '}
+              <FormGroup controlId="kpi">
+                <ControlLabel>KPI</ControlLabel>{' '}
+                <input name="kpi" className='form-control' type="text" placeholder="" onChange={this.handleChange}/>
+              </FormGroup>{' '}
+              <FormGroup controlId="fileTreeKey">
+                <ControlLabel>File Tree Key</ControlLabel>{' '}
+                <input name="fileTreeKey" className='form-control' type="text" placeholder="" onChange={this.handleChange}/>
+              </FormGroup>{' '}
+              <FormGroup controlId="costCenter">
+                <ControlLabel>Cost Center</ControlLabel>{' '}
+                <input name="costCenter" className='form-control' type="text" placeholder="" onChange={this.handleChange}/>
               </FormGroup>{' '}
               <Button type='submit' bsStyle="primary">Save</Button>
             </form>

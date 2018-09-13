@@ -14,7 +14,7 @@ const HomePage = ({GoogleAuth, gapiClient}) => {
   }
 
   return(
-    <Spinner/>
+    <Spinner />
   )
 };
 
