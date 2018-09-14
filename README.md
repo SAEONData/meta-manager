@@ -1,3 +1,3 @@
 ## Meta Manager
 
-A web editor for Google Docs Metadata implemented in [React](https://reactjs.org/)
+A data management tool for Google objects in [React](https://reactjs.org/)
