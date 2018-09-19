@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+
+import FileIcon from '../components/FileIcon.jsx';
+import FileActionsDropdownButton from './FileActionsDropdownButton.jsx';
 
 const propTypes = {
   GoogleAuth: PropTypes.object.isRequired,
@@ -24,7 +26,7 @@ class GoogleDriveFileList extends Component {
 
     let request = gapiClient.request({
       'method': 'GET',
-      'path': '/drive/v3/files',
+      'path': '/drive/v3/files?fields=*',
     });
 
     request.execute(function(response) {
@@ -38,17 +40,17 @@ class GoogleDriveFileList extends Component {
 
   render() {
     const { files } = this.state;
+    const { gapiClient } = this.props;
+
     let fileRows = files.map((file, index) => {
       return(
         <tr key={`doc-id-${index}`}>
           <td>{index + 1}</td>
           <td>{file.name}</td>
-          <td>{file.mimeType}</td>
+          <td><FileIcon mimeType={file.mimeType} /></td>
+          <td>{file.modifiedTime}</td>
           <td>
-            <Link to={`/file/${file.id}`}>
-              View &nbsp;
-              <span className='icon icon--chevron-right'/>
-            </Link>
+            <FileActionsDropdownButton file={file} gapiClient={gapiClient} />
           </td>
         </tr>
       )
@@ -63,7 +65,8 @@ class GoogleDriveFileList extends Component {
               <th>#</th>
               <th>Document Name</th>
               <th>Mime Type</th>
-              <th>View Properties</th>
+              <th>Last Modified Date</th>
+              <th>Actions</th>
             </tr>
             </thead>
             <tbody>

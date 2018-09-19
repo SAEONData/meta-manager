@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 
 import HomePage from '../components/HomePage.jsx';
 import ViewFileInfoPage from '../components/ViewFileInfoPage.jsx';
@@ -20,6 +21,7 @@ class App extends Component {
     this.setSignInStatus = this.setSignInStatus.bind(this);
     this.updateGoogleAuthInState = this.updateGoogleAuthInState.bind(this);
     this.updateGAPIinState = this.updateGAPIinState.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
   componentDidMount(){
@@ -67,15 +69,13 @@ class App extends Component {
     this.setSignInStatus(isSignedIn)
   }
 
-  setSignInStatus(isSignedIn) {
+  setSignInStatus() {
     const { GoogleAuth } = this.state;
     let user = GoogleAuth.currentUser.get();
     let isAuthorized = user.hasGrantedScopes(SCOPE);
 
     if(isAuthorized){
       this.setState({isSignedIn: true})
-    }else{
-      GoogleAuth.signIn();
     }
 
   }
@@ -84,23 +84,41 @@ class App extends Component {
     this.setState({GoogleAuth: GoogleAuth})
   }
 
+  logout(){
+    let { GoogleAuth } = this.state;
+    GoogleAuth.signOut();
+    this.setState({isSignedIn: false})
+  }
 
   render () {
-    const { GoogleAuth, gapiClient } = this.state;
+    const { GoogleAuth, gapiClient, isSignedIn } = this.state;
+
     return(
+
       <div className='container'>
+        {isSignedIn &&
+          <div>
+            <Button bsStyle='primary' onClick={this.logout}>Logout</Button>
+          </div>
+        }
         <h1>Data Management Tool</h1>
         <Router>
           <React.Fragment>
-            <Route exact path='/' render={() => <HomePage GoogleAuth={GoogleAuth} gapiClient={gapiClient}/>}/>
+            <Route exact path='/' render={() => <HomePage
+              GoogleAuth={GoogleAuth}
+              gapiClient={gapiClient}
+              isSignedIn={isSignedIn}
+            />}/>
             <Route path='/file/:id' render={(props) => <ViewFileInfoPage
               GoogleAuth={GoogleAuth}
               gapiClient={gapiClient}
               fileId={props.match.params.id}
+              isSignedIn={isSignedIn}
               />}/>
           </React.Fragment>
         </Router>
       </div>
+
     )
   }
 }
