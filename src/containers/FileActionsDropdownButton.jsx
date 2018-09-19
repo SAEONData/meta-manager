@@ -26,8 +26,7 @@ class FileActionsDropdownButton extends Component {
       >
         <MenuItem eventKey="1">Archive</MenuItem>
         <MenuItem eventKey="2">File</MenuItem>
-        <MenuItem eventKey="3"><Link to={`/file/${file.id}`}>Properties</Link></MenuItem>
-        <MenuItem eventKey="4">Publish</MenuItem>
+        <MenuItem eventKey="3">Publish</MenuItem>
       </DropdownButton>
     )
   }
