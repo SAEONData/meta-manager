@@ -97,8 +97,8 @@ class App extends Component {
 
       <div className='container'>
         {isSignedIn &&
-          <div>
-            <Button bsStyle='primary' onClick={this.logout}>Logout</Button>
+          <div className='top-corner'>
+            <Button bsStyle='primary' onClick={this.logout}><i className='fas fa-power-off'/></Button>
           </div>
         }
         <h1>Data Management Tool</h1>
