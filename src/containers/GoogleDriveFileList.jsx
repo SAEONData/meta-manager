@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Table } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 
 import FileIcon from '../components/FileIcon.jsx';
 import FileActionsDropdownButton from './FileActionsDropdownButton.jsx';
@@ -8,6 +8,8 @@ import FileActionsDropdownButton from './FileActionsDropdownButton.jsx';
 const propTypes = {
   GoogleAuth: PropTypes.object.isRequired,
   gapiClient: PropTypes.object.isRequired,
+  isSignedIn: PropTypes.bool.isRequired,
+  logout: PropTypes.func.isRequired,
 };
 
 class GoogleDriveFileList extends Component {
@@ -40,12 +42,11 @@ class GoogleDriveFileList extends Component {
 
   render() {
     const { files } = this.state;
-    const { gapiClient } = this.props;
+    const { gapiClient, isSignedIn, logout } = this.props;
 
     let fileRows = files.map((file, index) => {
       return(
         <tr key={`doc-id-${index}`}>
-          <td>{index + 1}</td>
           <td>{file.name}</td>
           <td><FileIcon mimeType={file.mimeType} /></td>
           <td>{file.modifiedTime}</td>
@@ -58,11 +59,15 @@ class GoogleDriveFileList extends Component {
 
     return(
       <div>
+        {isSignedIn &&
+        <div className='top-corner'>
+          <Button bsStyle='primary' onClick={logout}><i className='fas fa-power-off'/></Button>
+        </div>
+        }
         <p>File List</p>
         <Table striped bordered condensed hover>
           <thead>
             <tr>
-              <th>#</th>
               <th>Document Name</th>
               <th>Mime Type</th>
               <th>Last Modified Date</th>

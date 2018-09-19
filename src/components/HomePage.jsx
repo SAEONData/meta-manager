@@ -8,14 +8,18 @@ const propTypes = {
   GoogleAuth: PropTypes.object.isRequired,
   gapiClient: PropTypes.object,
   isSignedIn: PropTypes.bool,
+  logout: PropTypes.func.isRequired,
+
 };
 
-const HomePage = ({GoogleAuth, gapiClient, isSignedIn}) => {
+const HomePage = ({GoogleAuth, gapiClient, isSignedIn, logout}) => {
   if(gapiClient && isSignedIn){
     return(
       <GoogleDriveFileList
         GoogleAuth={GoogleAuth}
-        gapiClient={gapiClient}/>
+        gapiClient={gapiClient}
+        isSignedIn={isSignedIn}
+        logout={logout}/>
     )
   }
 

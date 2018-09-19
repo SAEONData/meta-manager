@@ -96,11 +96,6 @@ class App extends Component {
     return(
 
       <div className='container'>
-        {isSignedIn &&
-          <div className='top-corner'>
-            <Button bsStyle='primary' onClick={this.logout}><i className='fas fa-power-off'/></Button>
-          </div>
-        }
         <h1>Data Management Tool</h1>
         <Router>
           <React.Fragment>
@@ -108,6 +103,7 @@ class App extends Component {
               GoogleAuth={GoogleAuth}
               gapiClient={gapiClient}
               isSignedIn={isSignedIn}
+              logout={this.logout}
             />}/>
             <Route path='/file/:id' render={(props) => <ViewFileInfoPage
               GoogleAuth={GoogleAuth}
