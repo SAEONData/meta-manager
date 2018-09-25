@@ -178,6 +178,10 @@ class DriveFile extends Component {
                 <ControlLabel>Cost Center</ControlLabel>{' '}
                 <input name="costCenter" className='form-control' type="text" placeholder="" onChange={this.handleChange}/>
               </FormGroup>{' '}
+              <FormGroup controlId="status">
+                <ControlLabel>Status</ControlLabel>{' '}
+                <input name="status" className='form-control' type="text" placeholder="" onChange={this.handleChange}/>
+              </FormGroup>{' '}
               <Button type='submit' bsStyle="primary">Save</Button>
             </form>
           </Modal.Body>

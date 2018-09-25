@@ -4,6 +4,8 @@ import { Button, Table } from 'react-bootstrap';
 
 import FileIcon from '../components/FileIcon.jsx';
 import FileActionsDropdownButton from './FileActionsDropdownButton.jsx';
+import { dateTimeFormat } from '../utils/dateFormatter';
+import StatusIcon from "../components/StatusIcon";
 
 const propTypes = {
   GoogleAuth: PropTypes.object.isRequired,
@@ -18,11 +20,13 @@ class GoogleDriveFileList extends Component {
     this.state = {
       files: [],
       showingInnerFolder: false,
+      displayFilters: false,
     };
 
     this.updateFilesInState = this.updateFilesInState.bind(this);
     this.loadFilesInFolder = this.loadFilesInFolder.bind(this);
     this.updateStateWithResponse = this.updateStateWithResponse.bind(this);
+    this.toggleDisplayFilter = this.toggleDisplayFilter.bind(this);
   }
 
   componentDidMount(){
@@ -62,17 +66,17 @@ class GoogleDriveFileList extends Component {
     });
   }
 
-  render() {
-    const { files, showingInnerFolder } = this.state;
-    const { gapiClient, isSignedIn, logout } = this.props;
+  renderRows(files){
+    const { gapiClient } = this.props;
 
-    let fileRows = files.map((file, index) => {
+    return files.map((file, index) => {
       if(file.mimeType === 'application/vnd.google-apps.folder'){
         return(
-          <tr className='active-row' key={`doc-id-${index}`} onClick={() => {this.loadFilesInFolder(file.id)}}>
-            <td>{file.name}</td>
+          <tr className='active-row' key={`doc-id-${index}`}>
+            <td onClick={() => {this.loadFilesInFolder(file.id)}}>{file.name}</td>
             <td><FileIcon mimeType={file.mimeType} /></td>
-            <td>{file.modifiedTime}</td>
+            <td>{dateTimeFormat(file.modifiedTime)}</td>
+            <td>{file.properties ? <StatusIcon status= {file.properties.status} />: ''}</td>
             <td>
               <FileActionsDropdownButton file={file} gapiClient={gapiClient} />
             </td>
@@ -82,37 +86,51 @@ class GoogleDriveFileList extends Component {
       }
       return(
         <tr className='active-row'
-            key={`doc-id-${index}`} onClick={() => {location.assign(`/file/${file.id}`)}}>
-          <td>{file.name}</td>
+            key={`doc-id-${index}`}>
+          <td onClick={() => {location.assign(`/file/${file.id}`)}}>{file.name}</td>
           <td><FileIcon mimeType={file.mimeType} /></td>
-          <td>{file.modifiedTime}</td>
+          <td>{dateTimeFormat(file.modifiedTime)}</td>
+          <td>{file.properties ? <StatusIcon status= {file.properties.status} />: ''}</td>
           <td>
             <FileActionsDropdownButton file={file} gapiClient={gapiClient} />
           </td>
         </tr>
       )
     });
+  }
+
+  toggleDisplayFilter(){
+    this.setState((prevState) => ({ displayFilters: !prevState.displayFilters }))
+  }
+
+  render() {
+    const { files, showingInnerFolder, displayFilters } = this.state;
+    const { isSignedIn, logout } = this.props;
 
     return(
       <div>
         {isSignedIn &&
-        <div className='top-corner'>
-          <Button bsStyle='primary' onClick={logout}><i className='fas fa-power-off'/></Button>
-        </div>
+          <div className='top-corner'>
+            <Button bsStyle='primary' onClick={logout}><i className='fas fa-power-off'/></Button>
+          </div>
         }
         <p>File List</p>
+        <a className='cursor-pointer' onClick={this.toggleDisplayFilter}>{`${displayFilters ? 'Hide' : 'Show'}`} Advanced Filters</a>
+        <br/>
         {showingInnerFolder && <a onClick={() => {location.reload()}}>Back</a>}
-        <Table striped bordered condensed hover>
+        <br/>
+        <Table striped bordered hover>
           <thead>
             <tr>
               <th>Document Name</th>
               <th>Mime Type</th>
               <th>Last Modified Date</th>
+              <th>Status</th>
               <th>Actions</th>
             </tr>
             </thead>
             <tbody>
-              {fileRows}
+              {this.renderRows(files)}
             </tbody>
         </Table>
       </div>

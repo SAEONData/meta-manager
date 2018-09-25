@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 
 const propTypes = {
   gapiClient: PropTypes.object,
