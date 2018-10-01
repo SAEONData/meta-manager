@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Table, Button, Modal, FormGroup, ControlLabel } from 'react-bootstrap';
+import { Table, Button, Modal, FormGroup, ControlLabel,DropdownButton,MenuItem } from 'react-bootstrap';
+
 
 const propTypes = {
   GoogleAuth: PropTypes.object.isRequired,
@@ -166,6 +167,15 @@ class DriveFile extends Component {
                 <ControlLabel>Grant</ControlLabel>{' '}
                 <input name="grant" className='form-control' type="text" placeholder="" onChange={this.handleChange}/>
               </FormGroup>{' '}
+              <DropdownButton title="Kpi">
+                <MenuItem href="#books">Contributing to a vibrant national innovation system.</MenuItem>
+                <MenuItem href="#podcasts">Enhance strategic international engagements.</MenuItem>
+                <MenuItem href="#">Establish and maintain research infrastructure and platforms.</MenuItem>
+                <MenuItem href="#">Growing a representative science and technology workforce in South Africa.</MenuItem>
+                <MenuItem href="#addBlog">Operating world-class Research Platforms.</MenuItem>
+                <MenuItem href="#addBlog">Promoting internationally competitive research as basis for a knowledge economy.</MenuItem>
+                <MenuItem href="#addBlog">Providing cutting-edge research, technology and innovation platforms.</MenuItem>
+              </DropdownButton>
               <FormGroup controlId="kpi">
                 <ControlLabel>KPI</ControlLabel>{' '}
                 <input name="kpi" className='form-control' type="text" placeholder="" onChange={this.handleChange}/>

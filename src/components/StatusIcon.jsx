@@ -23,4 +23,7 @@ const StatusIcon = ({status}) => {
 };
 
 StatusIcon.propTypes = propTypes;
+StatusIcon.defaultProps = {
+  status: ''
+}
 export default StatusIcon;

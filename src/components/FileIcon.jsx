@@ -8,6 +8,7 @@ const propTypes = {
 const FileIcon = ({mimeType}) => {
   switch(mimeType){
     case 'application/vnd.google-apps.document':
+    case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
       return <i className='fas fa-file-alt blue-color'/>;
     case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
     case 'application/vnd.google-apps.spreadsheet':
