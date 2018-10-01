@@ -123,7 +123,7 @@ class GoogleDriveFileList extends Component {
           <thead>
             <tr>
               <th>Document Name</th>
-              <th>Mime Type</th>
+              <th>Object Type</th>
               <th>Last Modified Date</th>
               <th>Status</th>
               <th>Actions</th>

@@ -11,6 +11,7 @@ const FileIcon = ({mimeType}) => {
       return <i className='fas fa-file-alt blue-color'/>;
     case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
     case 'application/vnd.google-apps.spreadsheet':
+    case 'application/vnd.ms-excel':
       return <i className='fas fa-file-excel green-color'/>;
     case 'application/vnd.google-apps.folder':
         return <i className='fas fa-folder'/>;

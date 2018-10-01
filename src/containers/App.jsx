@@ -95,7 +95,8 @@ class App extends Component {
     return(
 
       <div className='container'>
-        <h1>Data Management Tool</h1>
+        <h1>Digital Objects Tool</h1>
+        <h3>SAEON’s Digital Objects Tool can be used to archive, file and / or publish digital objects.</h3>
         <Router>
           <React.Fragment>
             <Route exact path='/' render={() => <HomePage

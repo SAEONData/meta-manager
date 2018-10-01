@@ -13,7 +13,7 @@ const StatusIcon = ({status}) => {
     case 'filed':
       return <i className='fas fa-file-export'/>;
     case 'published':
-      return <i className='fas fa-check'/>;
+      return <i className='fas fa-check blue-color'/>;
 
 
 
