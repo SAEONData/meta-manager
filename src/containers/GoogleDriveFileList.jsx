@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Table } from 'react-bootstrap';
 
+import { dateTimeFormat } from '../utils/dateFormatter';
 import FileIcon from '../components/FileIcon.jsx';
 import FileActionsDropdownButton from './FileActionsDropdownButton.jsx';
-import { dateTimeFormat } from '../utils/dateFormatter';
-import StatusIcon from "../components/StatusIcon";
+import StatusIcon from '../components/StatusIcon.jsx';
+import FileObjectModal from './FileObjectModal.jsx';
 
 const propTypes = {
   GoogleAuth: PropTypes.object.isRequired,
@@ -21,12 +22,15 @@ class GoogleDriveFileList extends Component {
       files: [],
       showingInnerFolder: false,
       displayFilters: false,
+      activeFileObject: null,
+      isFormOpen: false,
     };
 
     this.updateFilesInState = this.updateFilesInState.bind(this);
     this.loadFilesInFolder = this.loadFilesInFolder.bind(this);
     this.updateStateWithResponse = this.updateStateWithResponse.bind(this);
     this.toggleDisplayFilter = this.toggleDisplayFilter.bind(this);
+    this.toggleIsFormOpen = this.toggleIsFormOpen.bind(this);
   }
 
   componentDidMount(){
@@ -66,6 +70,10 @@ class GoogleDriveFileList extends Component {
     });
   }
 
+  toggleIsFormOpen(file){
+    this.setState(prevState => ({ isFormOpen: !prevState.isFormOpen, activeFileObject: file}))
+  }
+
   renderRows(files){
     const { gapiClient } = this.props;
 
@@ -78,7 +86,7 @@ class GoogleDriveFileList extends Component {
             <td>{dateTimeFormat(file.modifiedTime)}</td>
             <td>{file.properties ? <StatusIcon status= {file.properties.status} />: ''}</td>
             <td>
-              <FileActionsDropdownButton file={file} gapiClient={gapiClient} />
+              <FileActionsDropdownButton file={file} gapiClient={gapiClient} onFileActionClicked={this.toggleIsFormOpen}/>
             </td>
           </tr>
         )
@@ -92,7 +100,7 @@ class GoogleDriveFileList extends Component {
           <td>{dateTimeFormat(file.modifiedTime)}</td>
           <td>{file.properties ? <StatusIcon status= {file.properties.status} />: ''}</td>
           <td>
-            <FileActionsDropdownButton file={file} gapiClient={gapiClient} />
+            <FileActionsDropdownButton file={file} gapiClient={gapiClient} onFileActionClicked={this.toggleIsFormOpen}/>
           </td>
         </tr>
       )
@@ -104,8 +112,8 @@ class GoogleDriveFileList extends Component {
   }
 
   render() {
-    const { files, showingInnerFolder, displayFilters } = this.state;
-    const { isSignedIn, logout } = this.props;
+    const { files, showingInnerFolder, displayFilters, activeFileObject, isFormOpen } = this.state;
+    const { isSignedIn, logout, GoogleAuth, gapiClient } = this.props;
 
     return(
       <div>
@@ -133,6 +141,12 @@ class GoogleDriveFileList extends Component {
               {this.renderRows(files)}
             </tbody>
         </Table>
+        <FileObjectModal
+          GoogleAuth={GoogleAuth}
+          gapiClient={gapiClient}
+          file={activeFileObject}
+          isOpen={isFormOpen}
+          onClose={this.toggleIsFormOpen}/>
       </div>
     )
   }
