@@ -6,6 +6,7 @@ const propTypes = {
   gapiClient: PropTypes.object,
   file: PropTypes.object.isRequired,
   onFileActionClicked: PropTypes.func,
+  onArchiveActionClicked: PropTypes.func,
 };
 
 
@@ -15,7 +16,7 @@ class FileActionsDropdownButton extends Component {
   }
 
   render (){
-    const { file, onFileActionClicked } = this.props;
+    const { file, onFileActionClicked, onArchiveActionClicked } = this.props;
 
     return(
       <DropdownButton
@@ -24,7 +25,7 @@ class FileActionsDropdownButton extends Component {
         key={1}
         id='file-actions'
       >
-        <MenuItem eventKey="1">Archive</MenuItem>
+        <MenuItem eventKey="1" onClick={() => { onArchiveActionClicked(file) }}>Archive</MenuItem>
         <MenuItem eventKey="2" onClick={() => { onFileActionClicked(file) }}>File</MenuItem>
         <MenuItem eventKey="3">Publish</MenuItem>
       </DropdownButton>

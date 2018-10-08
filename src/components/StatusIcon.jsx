@@ -11,9 +11,9 @@ const StatusIcon = ({status}) => {
     case 'archived':
       return <i className='fas fa-archive'/>;
     case 'filed':
-      return <i className='fas fa-file-export'/>;
+      return <img  className='fas' src={require('../images/file.svg')} />;
     case 'published':
-      return <i className='fas fa-check blue-color'/>;
+      return <img className='fas' src={require('../images/publish.png')}/>;
 
 
 
@@ -25,5 +25,5 @@ const StatusIcon = ({status}) => {
 StatusIcon.propTypes = propTypes;
 StatusIcon.defaultProps = {
   status: ''
-}
+};
 export default StatusIcon;

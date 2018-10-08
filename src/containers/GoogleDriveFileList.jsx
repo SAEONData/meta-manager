@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Table } from 'react-bootstrap';
+import { Button, Table, Modal } from 'react-bootstrap';
 
 import { dateTimeFormat } from '../utils/dateFormatter';
 import FileIcon from '../components/FileIcon.jsx';
 import FileActionsDropdownButton from './FileActionsDropdownButton.jsx';
 import StatusIcon from '../components/StatusIcon.jsx';
 import FileObjectModal from './FileObjectModal.jsx';
+import ArchiveObjectModal from './ArchiveObjectModal.jsx';
 
 const propTypes = {
   GoogleAuth: PropTypes.object.isRequired,
@@ -24,6 +25,8 @@ class GoogleDriveFileList extends Component {
       displayFilters: false,
       activeFileObject: null,
       isFormOpen: false,
+      isArchiveFormOpen: false,
+      isHelpModalShown: false,
     };
 
     this.updateFilesInState = this.updateFilesInState.bind(this);
@@ -31,6 +34,8 @@ class GoogleDriveFileList extends Component {
     this.updateStateWithResponse = this.updateStateWithResponse.bind(this);
     this.toggleDisplayFilter = this.toggleDisplayFilter.bind(this);
     this.toggleIsFormOpen = this.toggleIsFormOpen.bind(this);
+    this.toggleIsArchiveFormOpen = this.toggleIsArchiveFormOpen.bind(this);
+    this.toggleHelpModal = this.toggleHelpModal.bind(this);
   }
 
   componentDidMount(){
@@ -74,6 +79,14 @@ class GoogleDriveFileList extends Component {
     this.setState(prevState => ({ isFormOpen: !prevState.isFormOpen, activeFileObject: file}))
   }
 
+  toggleIsArchiveFormOpen(file){
+    this.setState(prevState => ({ isArchiveFormOpen: !prevState.isArchiveFormOpen, activeFileObject: file}))
+  }
+
+  toggleHelpModal(){
+    this.setState(prevState => ({ isHelpModalShown: !prevState.isHelpModalShown }))
+  }
+
   renderRows(files){
     const { gapiClient } = this.props;
 
@@ -86,7 +99,12 @@ class GoogleDriveFileList extends Component {
             <td>{dateTimeFormat(file.modifiedTime)}</td>
             <td>{file.properties ? <StatusIcon status= {file.properties.status} />: ''}</td>
             <td>
-              <FileActionsDropdownButton file={file} gapiClient={gapiClient} onFileActionClicked={this.toggleIsFormOpen}/>
+              <FileActionsDropdownButton
+                file={file}
+                gapiClient={gapiClient}
+                onFileActionClicked={this.toggleIsFormOpen}
+                onArchiveActionClicked={this.toggleIsArchiveFormOpen}
+              />
             </td>
           </tr>
         )
@@ -100,7 +118,12 @@ class GoogleDriveFileList extends Component {
           <td>{dateTimeFormat(file.modifiedTime)}</td>
           <td>{file.properties ? <StatusIcon status= {file.properties.status} />: ''}</td>
           <td>
-            <FileActionsDropdownButton file={file} gapiClient={gapiClient} onFileActionClicked={this.toggleIsFormOpen}/>
+            <FileActionsDropdownButton
+              file={file}
+              gapiClient={gapiClient}
+              onFileActionClicked={this.toggleIsFormOpen}
+              onArchiveActionClicked={this.toggleIsArchiveFormOpen}
+            />
           </td>
         </tr>
       )
@@ -112,7 +135,14 @@ class GoogleDriveFileList extends Component {
   }
 
   render() {
-    const { files, showingInnerFolder, displayFilters, activeFileObject, isFormOpen } = this.state;
+    const {
+      files,
+      showingInnerFolder,
+      displayFilters,
+      activeFileObject,
+      isFormOpen,
+      isArchiveFormOpen,
+      isHelpModalShown } = this.state;
     const { isSignedIn, logout, GoogleAuth, gapiClient } = this.props;
 
     return(
@@ -134,7 +164,11 @@ class GoogleDriveFileList extends Component {
               <th>Object Type</th>
               <th>Last Modified Date</th>
               <th>Status</th>
-              <th>Actions</th>
+              <th>Actions &nbsp;
+                <a className='cursor-pointer' onClick={this.toggleHelpModal}>
+                  <i className='fas fa-question-circle small'/>
+                </a>
+              </th>
             </tr>
             </thead>
             <tbody>
@@ -147,6 +181,31 @@ class GoogleDriveFileList extends Component {
           file={activeFileObject}
           isOpen={isFormOpen}
           onClose={this.toggleIsFormOpen}/>
+        <ArchiveObjectModal
+          GoogleAuth={GoogleAuth}
+          gapiClient={gapiClient}
+          file={activeFileObject}
+          isOpen={isArchiveFormOpen}
+          onClose={this.toggleIsArchiveFormOpen}/>
+        <Modal show={isHelpModalShown} onHide={this.toggleHelpModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Actions Help</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <h2>Archive</h2>
+            <p>This will add your object to the SAEON digital object archive where it will be preserved.</p>
+
+            <h2>File</h2>
+            <p>This will also add your object to the SAEON digital object archive but will also offer you the
+              opportunity to fill in information that will allow it to be recognised by SAEON’s
+              filing system and to indicate which KPI it relates to and which quarter it should be reported in.</p>
+
+            <h2>Publish</h2>
+            <p>this publishes digital objects in the SAEON repository and makes them publicly available and assigns a
+              Digital Object Identifier (DOI) assigned to them.
+            </p>
+          </Modal.Body>
+        </Modal>
       </div>
     )
   }

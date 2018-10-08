@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Table, Button } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 
 const propTypes = {
   GoogleAuth: PropTypes.object.isRequired,
@@ -110,7 +110,6 @@ class DriveFile extends Component {
           {fileProps}
           </tbody>
         </Table>
-        <Button bsStyle="primary" onClick={this.showAddPropertyModal}>Add Property</Button>
       </div>
     )
   }
