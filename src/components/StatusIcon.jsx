@@ -11,7 +11,7 @@ const StatusIcon = ({status}) => {
     case 'archived':
       return <i className='fas fa-archive'/>;
     case 'filed':
-      return <img  className='fas' src={require('../images/file.svg')} />;
+      return <img  className='fas' src={require('../images/file.png')} />;
     case 'published':
       return <img className='fas' src={require('../images/publish.png')}/>;
 

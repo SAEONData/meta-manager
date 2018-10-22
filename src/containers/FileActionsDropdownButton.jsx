@@ -27,7 +27,7 @@ class FileActionsDropdownButton extends Component {
       >
         <MenuItem eventKey="1" onClick={() => { onArchiveActionClicked(file) }}>Archive</MenuItem>
         <MenuItem eventKey="2" onClick={() => { onFileActionClicked(file) }}>File</MenuItem>
-        <MenuItem eventKey="3">Publish</MenuItem>
+        <MenuItem eventKey="3" onClick={() => { location.assign(`${process.env.PUBLISH_URL}`) }}> Publish</MenuItem>
       </DropdownButton>
     )
   }
