@@ -7,6 +7,7 @@ const propTypes = {
   file: PropTypes.object.isRequired,
   onFileActionClicked: PropTypes.func,
   onArchiveActionClicked: PropTypes.func,
+  onPublishClicked: PropTypes.func,
 };
 
 
@@ -16,7 +17,7 @@ class FileActionsDropdownButton extends Component {
   }
 
   render (){
-    const { file, onFileActionClicked, onArchiveActionClicked } = this.props;
+    const { file, onFileActionClicked, onArchiveActionClicked, onPublishClicked } = this.props;
 
     return(
       <DropdownButton
@@ -27,7 +28,7 @@ class FileActionsDropdownButton extends Component {
       >
         <MenuItem eventKey="1" onClick={() => { onArchiveActionClicked(file) }}>Archive</MenuItem>
         <MenuItem eventKey="2" onClick={() => { onFileActionClicked(file) }}>File</MenuItem>
-        <MenuItem eventKey="3" onClick={() => { location.assign(`${process.env.PUBLISH_URL}`) }}> Publish</MenuItem>
+        <MenuItem eventKey="3" onClick={() => { onPublishClicked() }}>Publish</MenuItem>
       </DropdownButton>
     )
   }

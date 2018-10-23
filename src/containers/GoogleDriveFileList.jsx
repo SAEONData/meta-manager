@@ -8,6 +8,7 @@ import FileActionsDropdownButton from './FileActionsDropdownButton.jsx';
 import StatusIcon from '../components/StatusIcon.jsx';
 import FileObjectModal from './FileObjectModal.jsx';
 import ArchiveObjectModal from './ArchiveObjectModal.jsx';
+import PublishObjectModal from "./PublishObjectModal";
 
 const propTypes = {
   GoogleAuth: PropTypes.object.isRequired,
@@ -27,6 +28,7 @@ class GoogleDriveFileList extends Component {
       isFormOpen: false,
       isArchiveFormOpen: false,
       isHelpModalShown: false,
+      isPublishModalShown: false,
     };
 
     this.updateFilesInState = this.updateFilesInState.bind(this);
@@ -36,6 +38,7 @@ class GoogleDriveFileList extends Component {
     this.toggleIsFormOpen = this.toggleIsFormOpen.bind(this);
     this.toggleIsArchiveFormOpen = this.toggleIsArchiveFormOpen.bind(this);
     this.toggleHelpModal = this.toggleHelpModal.bind(this);
+    this.togglePublishModal = this.togglePublishModal.bind(this);
   }
 
   componentDidMount(){
@@ -87,33 +90,26 @@ class GoogleDriveFileList extends Component {
     this.setState(prevState => ({ isHelpModalShown: !prevState.isHelpModalShown }))
   }
 
+  togglePublishModal(){
+    this.setState(prevState => ({ isPublishModalShown: !prevState.isPublishModalShown }))
+  }
+
+  onFileNameClicked(mimeType, fileId){
+    if(mimeType === 'application/vnd.google-apps.folder'){
+      return this.loadFilesInFolder(fileId);
+    }else{
+      return location.assign(`/file/${fileId}`);
+    }
+  }
+
   renderRows(files){
     const { gapiClient } = this.props;
 
     return files.map((file, index) => {
-      if(file.mimeType === 'application/vnd.google-apps.folder'){
-        return(
-          <tr className='active-row' key={`doc-id-${index}`}>
-            <td onClick={() => {this.loadFilesInFolder(file.id)}}>{file.name}</td>
-            <td><FileIcon mimeType={file.mimeType} /></td>
-            <td>{dateTimeFormat(file.modifiedTime)}</td>
-            <td>{file.properties ? <StatusIcon status= {file.properties.status} />: ''}</td>
-            <td>
-              <FileActionsDropdownButton
-                file={file}
-                gapiClient={gapiClient}
-                onFileActionClicked={this.toggleIsFormOpen}
-                onArchiveActionClicked={this.toggleIsArchiveFormOpen}
-              />
-            </td>
-          </tr>
-        )
-
-      }
       return(
         <tr className='active-row'
             key={`doc-id-${index}`}>
-          <td onClick={() => {location.assign(`/file/${file.id}`)}}>{file.name}</td>
+          <td onClick={() => this.onFileNameClicked(file.mimeType, file.id)}>{file.name}</td>
           <td><FileIcon mimeType={file.mimeType} /></td>
           <td>{dateTimeFormat(file.modifiedTime)}</td>
           <td>{file.properties ? <StatusIcon status= {file.properties.status} />: ''}</td>
@@ -123,6 +119,7 @@ class GoogleDriveFileList extends Component {
               gapiClient={gapiClient}
               onFileActionClicked={this.toggleIsFormOpen}
               onArchiveActionClicked={this.toggleIsArchiveFormOpen}
+              onPublishClicked={this.togglePublishModal}
             />
           </td>
         </tr>
@@ -142,7 +139,9 @@ class GoogleDriveFileList extends Component {
       activeFileObject,
       isFormOpen,
       isArchiveFormOpen,
-      isHelpModalShown } = this.state;
+      isHelpModalShown,
+      isPublishModalShown
+    } = this.state;
     const { isSignedIn, logout, GoogleAuth, gapiClient } = this.props;
 
     return(
@@ -187,6 +186,9 @@ class GoogleDriveFileList extends Component {
           file={activeFileObject}
           isOpen={isArchiveFormOpen}
           onClose={this.toggleIsArchiveFormOpen}/>
+        <PublishObjectModal
+          isOpen={isPublishModalShown}
+          onClose={this.togglePublishModal}/>
         <Modal show={isHelpModalShown} onHide={this.toggleHelpModal}>
           <Modal.Header closeButton>
             <Modal.Title>Actions Help</Modal.Title>
