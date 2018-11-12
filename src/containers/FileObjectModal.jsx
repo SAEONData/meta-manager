@@ -8,6 +8,31 @@ const propTypes = {
   file: PropTypes.object,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  people: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.string,
+    description: PropTypes.string,
+  })),
+  fileTreeKeys: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.string,
+    description: PropTypes.string,
+  })),
+  grants: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.string,
+    description: PropTypes.string,
+  })),
+  kpis: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.string,
+    description: PropTypes.string,
+  })),
+  offices: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.string,
+    description: PropTypes.string,
+  })),
+  projects: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.string,
+    description: PropTypes.string,
+  })),
+
 };
 
 class FileObjectModal extends Component {

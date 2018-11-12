@@ -17,6 +17,7 @@ class PublishObjectModal extends Component {
     const { isOpen, onClose } = this.props;
     return(
       <Modal show={isOpen} onHide={() => { onClose() }} bsSize='large'>
+        <Modal.Header closeButton />
         <Iframe
           url={process.env.PUBLISH_URL}
           width='900px'

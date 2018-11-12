@@ -8,7 +8,8 @@ import FileActionsDropdownButton from './FileActionsDropdownButton.jsx';
 import StatusIcon from '../components/StatusIcon.jsx';
 import FileObjectModal from './FileObjectModal.jsx';
 import ArchiveObjectModal from './ArchiveObjectModal.jsx';
-import PublishObjectModal from "./PublishObjectModal";
+import PublishObjectModal from './PublishObjectModal.jsx';
+import AdvancedFilter from './AdvancedFilter.jsx';
 
 const propTypes = {
   GoogleAuth: PropTypes.object.isRequired,
@@ -29,6 +30,12 @@ class GoogleDriveFileList extends Component {
       isArchiveFormOpen: false,
       isHelpModalShown: false,
       isPublishModalShown: false,
+      people: [],
+      offices: [],
+      projects: [],
+      grants: [],
+      kpis: [],
+      fileTreeKeys:[],
     };
 
     this.updateFilesInState = this.updateFilesInState.bind(this);
@@ -39,9 +46,15 @@ class GoogleDriveFileList extends Component {
     this.toggleIsArchiveFormOpen = this.toggleIsArchiveFormOpen.bind(this);
     this.toggleHelpModal = this.toggleHelpModal.bind(this);
     this.togglePublishModal = this.togglePublishModal.bind(this);
+    this.fetchFilesFromDrive = this.fetchFilesFromDrive.bind(this);
+    this.fetchFileObjectData = this.fetchFileObjectData.bind(this);
   }
 
   componentDidMount(){
+    this.fetchFilesFromDrive();
+  }
+
+  fetchFilesFromDrive(filters){
     const { gapiClient } = this.props;
     const updateFilesInState = this.updateFilesInState;
 
@@ -53,6 +66,18 @@ class GoogleDriveFileList extends Component {
     request.execute(function(response) {
       updateFilesInState(response.files)
     });
+  }
+
+  fetchFileObjectData(){
+    this.setState({
+      people: [],
+      offices: [],
+      projects: [],
+      grants: [],
+      kpis: [],
+      fileTreeKeys:[],
+
+    })
   }
 
   updateFilesInState(files){
@@ -140,7 +165,13 @@ class GoogleDriveFileList extends Component {
       isFormOpen,
       isArchiveFormOpen,
       isHelpModalShown,
-      isPublishModalShown
+      isPublishModalShown,
+      people,
+      fileTreeKeys,
+      grants,
+      kpis,
+      offices,
+      projects,
     } = this.state;
     const { isSignedIn, logout, GoogleAuth, gapiClient } = this.props;
 
@@ -153,6 +184,14 @@ class GoogleDriveFileList extends Component {
         }
         <p>File List</p>
         <a className='cursor-pointer' onClick={this.toggleDisplayFilter}>{`${displayFilters ? 'Hide' : 'Show'}`} Advanced Filters</a>
+        {
+          displayFilters &&
+            <React.Fragment>
+              <br />
+              <br />
+              <AdvancedFilter />
+            </React.Fragment>
+        }
         <br/>
         {showingInnerFolder && <a onClick={() => {location.reload()}}>Back</a>}
         <br/>
@@ -179,7 +218,14 @@ class GoogleDriveFileList extends Component {
           gapiClient={gapiClient}
           file={activeFileObject}
           isOpen={isFormOpen}
-          onClose={this.toggleIsFormOpen}/>
+          onClose={this.toggleIsFormOpen}
+          people={people}
+          offices={offices}
+          projects={projects}
+          grants={grants}
+          kpis={kpis}
+          fileTreeKeys={fileTreeKeys}
+        />
         <ArchiveObjectModal
           GoogleAuth={GoogleAuth}
           gapiClient={gapiClient}
